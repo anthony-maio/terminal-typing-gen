@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terminal Typing SVG Generator</title>
+  <style>
+    body {
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background-color: #232b38;
+      color: #e2f0fd;
+      line-height: 1.6;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1, h2, h3 {
+      color: #45b9a4;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+    
+    .header {
+      text-align: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #3f4251;
+    }
+    
+    .header h1 {
+      margin-bottom: 10px;
+    }
+    
+    .card {
+      background-color: #2a3142;
+      border-radius: 6px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    
+    .split {
+      display: flex;
+      gap: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .split {
+        flex-direction: column;
+      }
+    }
+    
+    .form-section, .preview-section {
+      flex: 1;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 8px 12px;
+      background-color: #232b38;
+      border: 1px solid #3f4251;
+      border-radius: 4px;
+      color: #e2f0fd;
+      font-family: monospace;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #45b9a4;
+    }
+    
+    button {
+      background-color: #356859;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+    
+    button:hover {
+      background-color: #45b9a4;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .secondary {
+      background-color: #9580ff;
+    }
+    
+    .secondary:hover {
+      background-color: #a990ff;
+    }
+    
+    .lines-container {
+      margin-bottom: 20px;
+    }
+    
+    .line-input {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    
+    .line-input input {
+      flex: 1;
+    }
+    
+    .line-input button {
+      background-color: #d95f98;
+      padding: 5px 10px;
+    }
+    
+    .line-input button:hover {
+      background-color: #e76fa8;
+    }
+    
+    .add-line {
+      background-color: #9580ff;
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+    
+    .preview-container {
+      background-color: #232b38;
+      border-radius: 6px;
+      padding: 20px;
+      height: 250px;
+      overflow: auto;
+    }
+    
+    .code-block {
+      background-color: #2a3142;
+      border-radius: 6px;
+      padding: 16px;
+      overflow: auto;
+      margin-top: 20px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    
+    .text-sm {
+      font-size: 14px;
+      color: #a0aec0;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #3f4251;
+      color: #a0aec0;
+    }
+    
+    a {
+      color: #45b9a4;
+      text-decoration: none;
+    }
+    
+    a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Custom color input styling */
+    .color-input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    
+    .color-input-container input[type="text"] {
+      padding-left: 40px;
+    }
+    
+    .color-preview {
+      position: absolute;
+      left: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: 1px solid #3f4251;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Terminal Typing SVG Generator</h1>
+      <p>Create beautiful animated terminal SVGs for your GitHub profile README</p>
+    </div>
+    
+    <div class="split">
+      <div class="form-section card">
+        <h2>Configuration</h2>
+        
+        <div class="form-group">
+          <label for="font">Font</label>
+          <select id="font">
+            <option value="monospace" selected>Monospace</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Consolas">Consolas</option>
+            <option value="Menlo">Menlo</option>
+            <option value="Monaco">Monaco</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="fontSize">Font Size (px)</label>
+          <input type="number" id="fontSize" value="14" min="8" max="24">
+        </div>
+        
+        <div class="form-group">
+          <label for="speed">Animation Speed</label>
+          <input type="range" id="speed" min="1" max="10" value="5">
+          <div class="text-sm">1: Very slow - 10: Very fast</div>
+        </div>
+        
+        <div class="form-group">
+          <label for="textColor">Text Color</label>
+          <div class="color-input-container">
+            <div class="color-preview" id="textColorPreview" style="background-color: #45b9a4;"></div>
+            <input type="text" id="textColor" value="#45b9a4">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="bgColor">Background Color</label>
+          <div class="color-input-container">
+            <div class="color-preview" id="bgColorPreview" style="background-color: #232b38;"></div>
+            <input type="text" id="bgColor" value="#232b38">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Terminal Lines</label>
+          <div class="lines-container" id="linesContainer">
+            <div class="line-input">
+              <input type="text" class="line-text" placeholder="Type your command or text here" value="Anthony Maio ~ Lead Software Engineer ~ Cloud Architect">
+              <button class="remove-line">×</button>
+            </div>
+          </div>
+          <button class="add-line" id="addLine">+ Add Line</button>
+        </div>
+        
+        <div class="form-group">
+          <label for="width">Width (px)</label>
+          <input type="number" id="width" value="800" min="400" max="1200">
+        </div>
+        
+        <div class="form-group">
+          <label for="height">Height (px)</label>
+          <input type="number" id="height" value="180" min="100" max="500">
+        </div>
+        
+        <div class="button-group">
+          <button id="generate">Generate SVG</button>
+          <button class="secondary" id="download">Download SVG</button>
+        </div>
+      </div>
+      
+      <div class="preview-section card">
+        <h2>Preview</h2>
+        <div class="preview-container" id="preview">
+          <!-- SVG preview will be inserted here -->
+        </div>
+        
+        <div class="code-block" id="markdownCode">
+          <!-- Markdown code will be inserted here -->
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer>
+    <p>Created by <a href="https://github.com/anthony-maio">Anthony Maio</a> | <a href="https://github.com/anthony-maio/terminal-typing-svg">View on GitHub</a></p>
+  </footer>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set up color picker functionality
+      const textColorInput = document.getElementById('textColor');
+      const bgColorInput = document.getElementById('bgColor');
+      const textColorPreview = document.getElementById('textColorPreview');
+      const bgColorPreview = document.getElementById('bgColorPreview');
+      
+      // Update color preview on input change
+      textColorInput.addEventListener('input', function() {
+        textColorPreview.style.backgroundColor = this.value;
+      });
+      
+      bgColorInput.addEventListener('input', function() {
+        bgColorPreview.style.backgroundColor = this.value;
+      });
+      
+      // Show color picker when clicking on text input
+      textColorInput.addEventListener('click', function() {
+        const colorPicker = document.createElement('input');
+        colorPicker.type = 'color';
+        colorPicker.value = this.value;
+        colorPicker.style.opacity = 0;
+        colorPicker.style.position = 'absolute';
+        colorPicker.style.pointerEvents = 'none';
+        document.body.appendChild(colorPicker);
+        
+        colorPicker.addEventListener('input', function() {
+          textColorInput.value = this.value;
+          textColorPreview.style.backgroundColor = this.value;
+        });
+        
+        colorPicker.click();
+        
+        // Remove the color picker element after selection
+        colorPicker.addEventListener('change', function() {
+          document.body.removeChild(colorPicker);
+        });
+      });
+      
+      // Show color picker when clicking on background input
+      bgColorInput.addEventListener('click', function() {
+        const colorPicker = document.createElement('input');
+        colorPicker.type = 'color';
+        colorPicker.value = this.value;
+        colorPicker.style.opacity = 0;
+        colorPicker.style.position = 'absolute';
+        colorPicker.style.pointerEvents = 'none';
+        document.body.appendChild(colorPicker);
+        
+        colorPicker.addEventListener('input', function() {
+          bgColorInput.value = this.value;
+          bgColorPreview.style.backgroundColor = this.value;
+        });
+        
+        colorPicker.click();
+        
+        // Remove the color picker element after selection
+        colorPicker.addEventListener('change', function() {
+          document.body.removeChild(colorPicker);
+        });
+      });
+      
+      // Add Line Button
+      document.getElementById('addLine').addEventListener('click', function() {
+        const linesContainer = document.getElementById('linesContainer');
+        const newLine = document.createElement('div');
+        newLine.className = 'line-input';
+        newLine.innerHTML = `
+          <input type="text" class="line-text" placeholder="Type your command or text here">
+          <button class="remove-line">×</button>
+        `;
+        linesContainer.appendChild(newLine);
+        
+        // Add event listener to the new remove button
+        newLine.querySelector('.remove-line').addEventListener('click', function() {
+          linesContainer.removeChild(newLine);
+        });
+      });
+      
+      // Add event listener to the initial remove button
+      document.querySelector('.remove-line').addEventListener('click', function() {
+        alert('Cannot remove the first line!');
+      });
+      
+      // Generate SVG Button
+      document.getElementById('generate').addEventListener('click', function() {
+        const font = document.getElementById('font').value;
+        const fontSize = document.getElementById('fontSize').value;
+        const speed = document.getElementById('speed').value;
+        const textColor = document.getElementById('textColor').value;
+        const bgColor = document.getElementById('bgColor').value;
+        const width = document.getElementById('width').value;
+        const height = document.getElementById('height').value;
+        
+        // Get all lines
+        const lineInputs = document.querySelectorAll('.line-text');
+        const lines = Array.from(lineInputs).map(input => input.value);
+        
+        // Generate SVG code
+        const svgCode = generateSVG(font, fontSize, speed, textColor, bgColor, width, height, lines);
+        
+        // Update preview
+        document.getElementById('preview').innerHTML = svgCode;
+        
+        // Update markdown code
+        const encodedSVG = encodeURIComponent(svgCode);
+        const markdownCode = `![Terminal](data:image/svg+xml,${encodedSVG})`;
+        document.getElementById('markdownCode').textContent = markdownCode;
+      });
+      
+      // Download SVG Button
+      document.getElementById('download').addEventListener('click', function() {
+        const svgElement = document.querySelector('#preview svg');
+        if (!svgElement) {
+          alert('Please generate an SVG first!');
+          return;
+        }
+        
+        const svgData = new XMLSerializer().serializeToString(svgElement);
+        const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+        const svgUrl = URL.createObjectURL(svgBlob);
+        
+        const downloadLink = document.createElement('a');
+        downloadLink.href = svgUrl;
+        downloadLink.download = 'terminal-typing.svg';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      });
+      
+      // Generate initial SVG
+      document.getElementById('generate').click();
+    });
+    
+    function generateSVG(font, fontSize, speed, textColor, bgColor, width, height, lines) {
+      // Calculate typing speed based on the speed slider (1-10)
+      const typingDuration = 11 - speed; // Invert scale so 1 is slowest, 10 is fastest
+      
+      // Calculate line height based on font size
+      const lineHeight = parseInt(fontSize) * 1.5;
+      
+      // Base SVG structure
+      let svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+        <style>
+          @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+          }
+          
+          @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+          }
+          
+          .cursor {
+            animation: blink 1s step-end infinite;
+          }
+          
+          .typing-container {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+          }
+          
+          .typing-text {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid ${textColor};
+            width: 0;
+            animation: typing ${typingDuration}s steps(50, end) forwards;
+          }
+        </style>
+        
+        <!-- Terminal background -->
+        <rect x="0" y="0" width="${width}" height="${height}" rx="6" ry="6" fill="${bgColor}" />
+        
+        <!-- Terminal header -->
+        <rect x="0" y="0" width="${width}" height="30" rx="6" ry="6" fill="#3f4251" />
+        <circle cx="20" cy="15" r="6" fill="#ff5f57" />
+        <circle cx="40" cy="15" r="6" fill="#febc2e" />
+        <circle cx="60" cy="15" r="6" fill="#28c840" />
+        <text x="${width/2}" y="20" text-anchor="middle" fill="#e2f0fd" font-family="${font}" font-size="12">~/anthony-maio</text>
+      `;
+      
+      // Add each line of text with typing animation
+      let yPos = 50;
+      lines.forEach((line, index) => {
+        // Escape XML special characters
+        const escapedLine = line
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&apos;');
+        
+        // Add prompt
+        svg += `
+        <g transform="translate(20, ${yPos})">
+          <text font-family="${font}" font-size="${fontSize}">
+            <tspan x="0" y="0" fill="#7A86A1">$</tspan>
+          </text>
+        `;
+        
+        // Add typing text with animation
+        const animationDelay = index * (typingDuration + 1);
+        
+        svg += `
+          <foreignObject x="15" y="-${fontSize}" width="${width - 50}" height="${fontSize * 2}">
+            <div xmlns="http://www.w3.org/1999/xhtml" style="position: relative;">
+              <span style="font-family: ${font}; font-size: ${fontSize}px; color: ${textColor}; white-space: nowrap;">
+                <span class="typing-text" style="animation-delay: ${animationDelay}s;">${escapedLine}</span>
+              </span>
+            </div>
+          </foreignObject>
+        </g>
+        `;
+        
+        yPos += lineHeight;
+      });
+      
+      // Close SVG
+      svg += `</svg>`;
+      
+      return svg;
+    }
+  </script>
+</body>
+</html>
